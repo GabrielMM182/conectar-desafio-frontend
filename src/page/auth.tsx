@@ -149,16 +149,6 @@ export default function AuthPage() {
                 mode === 'login' ? 'Entrar' : 'Criar Conta'
               )}
             </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={loginWithGoogle}
-              disabled={loading}
-            >
-              Entrar com Google
-            </Button>
           </form>
         </CardContent>
 

@@ -29,7 +29,6 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Cards de informações do usuário */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 mb-8">
           <Card>
             <CardHeader>
@@ -81,7 +80,6 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Tabela de Customers */}
         <CustomersTable />
       </div>
     </div>

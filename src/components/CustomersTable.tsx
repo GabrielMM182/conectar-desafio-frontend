@@ -161,7 +161,6 @@ export default function CustomersTable() {
         </div>
       </CardHeader>
       <CardContent>
-        {/* Filtros */}
         <div className="mb-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
@@ -249,14 +248,12 @@ export default function CustomersTable() {
           </div>
         </div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex justify-center py-8">
             <Spinner />
           </div>
         )}
 
-        {/* Indicador de resultados */}
         {!loading && (
           <div className="mb-4 flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
@@ -277,7 +274,6 @@ export default function CustomersTable() {
           </div>
         )}
 
-        {/* Tabela */}
         {!loading && (
           <>
             <div className="rounded-md border">
@@ -370,7 +366,6 @@ export default function CustomersTable() {
               </Table>
             </div>
 
-            {/* Paginação */}
             {pagination.totalPages > 1 && (
               <div className="mt-4 flex items-center justify-between">
                 <div className="text-sm text-muted-foreground">

@@ -10,11 +10,9 @@ export default function AppRoutes() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Public Routes */}
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/callback" element={<AuthPage />} />
           
-          {/* Protected Routes */}
           <Route 
             path="/dashboard" 
             element={
@@ -24,10 +22,8 @@ export default function AppRoutes() {
             } 
           />
           
-          {/* Default redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           
-          {/* Catch all - redirect to dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
