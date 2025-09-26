@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import CustomersTable from '@/components/CustomersTable';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -18,7 +19,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <Button onClick={handleLogout} variant="outline">
@@ -26,7 +27,8 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Cards de informações do usuário */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card>
             <CardHeader>
               <CardTitle>Bem-vindo!</CardTitle>
@@ -81,6 +83,9 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Tabela de Customers */}
+        <CustomersTable />
       </div>
     </div>
   );

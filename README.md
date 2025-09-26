@@ -13,6 +13,9 @@ Sistema completo de autenticação em React com TypeScript, React Router e Conte
 - ✅ Validação de formulários
 - ✅ Tratamento de erros
 - ✅ Loading states
+- ✅ **Tabela de Customers com filtros e paginação**
+- ✅ **Busca por razão social, CNPJ, status e Conecta Plus**
+- ✅ **Exibição de tags, status e datas formatadas**
 
 ## Estrutura do Projeto
 
@@ -20,12 +23,18 @@ Sistema completo de autenticação em React com TypeScript, React Router e Conte
 src/
 ├── components/
 │   ├── ui/                 # Componentes shadcn/ui
+│   │   ├── badge.tsx       # Componente Badge
+│   │   ├── table.tsx       # Componente Table
+│   │   ├── pagination.tsx  # Componente Pagination
+│   │   └── ...
 │   ├── ProtectedRoute.tsx  # Componente de rota protegida
+│   ├── CustomersTable.tsx  # Tabela de customers
 │   └── Spinner.tsx         # Componente de loading
 ├── context/
 │   └── AuthContext.tsx     # Context de autenticação
 ├── hooks/
-│   └── useAuth.ts          # Hook personalizado
+│   ├── useAuth.ts          # Hook de autenticação
+│   └── useCustomers.ts     # Hook de customers
 ├── pages/
 │   └── Dashboard.tsx       # Página do dashboard
 ├── page/
@@ -95,6 +104,41 @@ GET /auth/profile
 Authorization: Bearer <token>
 ```
 
+### Listagem de Customers
+```
+GET /customers?page=1&limit=10&status=ativo&razaoSocial=empresa
+Authorization: Bearer <token>
+
+Response:
+{
+  "data": [
+    {
+      "id": 1,
+      "razaoSocial": "Empresa Exemplo Ltda",
+      "cnpj": "12.345.678/0001-90",
+      "nomeFachada": "Empresa Exemplo",
+      "tags": ["tecnologia", "startup", "b2b"],
+      "status": "ativo",
+      "conectaPlus": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "total": 25,
+  "page": 1,
+  "limit": 10,
+  "totalPages": 3
+}
+```
+
+#### Query Parameters:
+- `page` - Número da página (default: 1)
+- `limit` - Itens por página (default: 10)
+- `razaoSocial` - Busca parcial por razão social
+- `cnpj` - Busca exata por CNPJ
+- `status` - Filtro por status (`ativo` ou `inativo`)
+- `conectaPlus` - Filtro por Conecta Plus (`true` ou `false`)
+
 ## Uso
 
 ### Context de Autenticação
@@ -105,7 +149,6 @@ import { useAuth } from '@/context/AuthContext';
 function MyComponent() {
   const { user, login, logout, loading } = useAuth();
   
-  // Usar as funções de autenticação
 }
 ```
 
@@ -153,7 +196,23 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 ### Dashboard
 - Página principal após autenticação
 - Exibe informações do usuário
+- **Tabela de customers com funcionalidades completas**
 - Botão de logout
+
+### CustomersTable
+- Tabela responsiva com todos os dados dos customers
+- Filtros por razão social, CNPJ, status e Conecta Plus
+- Paginação completa com navegação
+- Formatação automática de CNPJ e datas
+- Exibição de tags como badges
+- Status coloridos (ativo/inativo)
+- Loading states e tratamento de erros
+
+### useCustomers Hook
+- Gerenciamento de estado dos customers
+- Funções de busca com filtros
+- Controle de paginação
+- Cache e otimização de requisições
 
 ## Tecnologias Utilizadas
 

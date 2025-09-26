@@ -28,14 +28,12 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { login, register, loginWithGoogle, loading, user, accessToken } = useAuth();
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (user && accessToken) {
       navigate('/dashboard', { replace: true });
     }
   }, [user, accessToken, navigate]);
 
-  // Handle Google OAuth callback
   useEffect(() => {
     const token = searchParams.get('token');
     if (token) {

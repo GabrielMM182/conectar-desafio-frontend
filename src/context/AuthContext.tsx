@@ -21,7 +21,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Configure axios defaults
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 axios.defaults.baseURL = API_BASE_URL;
 
@@ -36,7 +35,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
   const [loading, setLoading] = useState(false);
 
-  // Set axios authorization header when token changes
   useEffect(() => {
     if (accessToken) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
@@ -47,7 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [accessToken]);
 
-  // Get user profile on mount if token exists
   useEffect(() => {
     if (accessToken && !user) {
       getProfile();
@@ -100,7 +97,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await axios.get('/auth/profile');
       setUser(response.data);
     } catch (error) {
-      // If profile fetch fails, clear token
       logout();
     }
   };
