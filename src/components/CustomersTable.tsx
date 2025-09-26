@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCustomers } from '@/hooks/useCustomers';
 import {
   Table,
@@ -46,20 +46,35 @@ export default function CustomersTable() {
     status: 'ativo' | 'inativo' | 'all';
     conectaPlus: boolean | 'all';
   }>({
-    razaoSocial: filters.razaoSocial || '',
-    cnpj: filters.cnpj || '',
-    status: filters.status || 'all',
-    conectaPlus: filters.conectaPlus === '' ? 'all' : filters.conectaPlus || 'all',
+    razaoSocial: '',
+    cnpj: '',
+    status: 'all',
+    conectaPlus: 'all',
   });
+
+  useEffect(() => {
+    setSearchForm({
+      razaoSocial: filters.razaoSocial || '',
+      cnpj: filters.cnpj || '',
+      status: filters.status === '' ? 'all' : filters.status || 'all',
+      conectaPlus: filters.conectaPlus === '' ? 'all' : filters.conectaPlus || 'all',
+    });
+  }, [filters]);
 
   const handleSearch = () => {
     updateFilters({
-      razaoSocial: searchForm.razaoSocial,
-      cnpj: searchForm.cnpj,
+      razaoSocial: searchForm.razaoSocial.trim(),
+      cnpj: searchForm.cnpj.trim(),
       status: searchForm.status === 'all' ? '' : searchForm.status,
       conectaPlus: searchForm.conectaPlus === 'all' ? '' : searchForm.conectaPlus,
       page: 1, 
     });
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   const handleReset = () => {
@@ -86,6 +101,32 @@ export default function CustomersTable() {
 
   const formatCNPJ = (cnpj: string) => {
     return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  };
+
+  const handleCNPJChange = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+        let formatted = numbers;
+    if (numbers.length >= 2) {
+      formatted = numbers.replace(/^(\d{2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2}).*/, (match, p1, p2, p3, p4, p5) => {
+        let result = p1;
+        if (p2) result += '.' + p2;
+        if (p3) result += '.' + p3;
+        if (p4) result += '/' + p4;
+        if (p5) result += '-' + p5;
+        return result;
+      });
+    }
+    
+    setSearchForm({ ...searchForm, cnpj: formatted });
+  };
+
+  const hasActiveFilters = () => {
+    return (
+      searchForm.razaoSocial.trim() !== '' ||
+      searchForm.cnpj.trim() !== '' ||
+      searchForm.status !== 'all' ||
+      searchForm.conectaPlus !== 'all'
+    );
   };
 
   if (error) {
@@ -122,6 +163,7 @@ export default function CustomersTable() {
                 onChange={(e) =>
                   setSearchForm({ ...searchForm, razaoSocial: e.target.value })
                 }
+                onKeyPress={handleKeyPress}
               />
             </div>
             <div>
@@ -129,9 +171,9 @@ export default function CustomersTable() {
               <Input
                 placeholder="00.000.000/0000-00"
                 value={searchForm.cnpj}
-                onChange={(e) =>
-                  setSearchForm({ ...searchForm, cnpj: e.target.value })
-                }
+                onChange={(e) => handleCNPJChange(e.target.value)}
+                onKeyPress={handleKeyPress}
+                maxLength={18} 
               />
             </div>
             <div>
@@ -176,13 +218,23 @@ export default function CustomersTable() {
               </Select>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button onClick={handleSearch} disabled={loading}>
-              Buscar
+              {loading ? 'Buscando...' : 'Buscar'}
             </Button>
-            <Button variant="outline" onClick={handleReset} disabled={loading}>
+            <Button 
+              variant="outline" 
+              onClick={handleReset} 
+              disabled={loading}
+              className={hasActiveFilters() ? 'border-orange-500 text-orange-600' : ''}
+            >
               Limpar Filtros
             </Button>
+            {hasActiveFilters() && (
+              <span className="text-sm text-muted-foreground">
+                Filtros ativos
+              </span>
+            )}
           </div>
         </div>
 
@@ -190,6 +242,27 @@ export default function CustomersTable() {
         {loading && (
           <div className="flex justify-center py-8">
             <Spinner />
+          </div>
+        )}
+
+        {/* Indicador de resultados */}
+        {!loading && (
+          <div className="mb-4 flex justify-between items-center">
+            <div className="text-sm text-muted-foreground">
+              {pagination.total > 0 ? (
+                <>
+                  Encontrados <strong>{pagination.total}</strong> customer{pagination.total !== 1 ? 's' : ''}
+                  {hasActiveFilters() && ' com os filtros aplicados'}
+                </>
+              ) : (
+                'Nenhum customer encontrado'
+              )}
+            </div>
+            {pagination.total > 0 && (
+              <div className="text-sm text-muted-foreground">
+                Página {pagination.page} de {pagination.totalPages}
+              </div>
+            )}
           </div>
         )}
 
@@ -213,8 +286,20 @@ export default function CustomersTable() {
                 <TableBody>
                   {customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-8">
-                        Nenhum customer encontrado
+                      <TableCell colSpan={8} className="text-center py-12">
+                        <div className="flex flex-col items-center gap-2">
+                          <p className="text-muted-foreground">
+                            {hasActiveFilters() 
+                              ? 'Nenhum customer encontrado com os filtros aplicados' 
+                              : 'Nenhum customer cadastrado'
+                            }
+                          </p>
+                          {hasActiveFilters() && (
+                            <Button variant="outline" size="sm" onClick={handleReset}>
+                              Limpar filtros
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : (
