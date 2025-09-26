@@ -28,6 +28,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import Spinner from '@/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import CreateCustomerDialog from '@/components/CreateCustomerDialog';
 
 export default function CustomersTable() {
   const {
@@ -38,6 +39,7 @@ export default function CustomersTable() {
     filters,
     updateFilters,
     resetFilters,
+    refetch,
   } = useCustomers();
 
   const [searchForm, setSearchForm] = useState<{
@@ -107,7 +109,7 @@ export default function CustomersTable() {
     const numbers = value.replace(/\D/g, '');
         let formatted = numbers;
     if (numbers.length >= 2) {
-      formatted = numbers.replace(/^(\d{2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2}).*/, (match, p1, p2, p3, p4, p5) => {
+      formatted = numbers.replace(/^(\d{2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2}).*/, (_, p1, p2, p3, p4, p5) => {
         let result = p1;
         if (p2) result += '.' + p2;
         if (p3) result += '.' + p3;
@@ -147,7 +149,10 @@ export default function CustomersTable() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Customers</CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle>Customers</CardTitle>
+          <CreateCustomerDialog onCustomerCreated={refetch} />
+        </div>
       </CardHeader>
       <CardContent>
         {/* Filtros */}

@@ -28,7 +28,7 @@ export default function Dashboard() {
         </div>
 
         {/* Cards de informações do usuário */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 mb-8">
           <Card>
             <CardHeader>
               <CardTitle>Bem-vindo!</CardTitle>
@@ -57,28 +57,6 @@ export default function Dashboard() {
                 <p>Status: <span className="text-green-600 font-semibold">Ativo</span></p>
                 <p>Último login: Agora</p>
                 <p>Sessão: Válida</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Ações</CardTitle>
-              <CardDescription>
-                O que você pode fazer
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Button className="w-full" variant="outline">
-                  Editar Perfil
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Configurações
-                </Button>
-                <Button className="w-full" variant="outline">
-                  Ajuda
-                </Button>
               </div>
             </CardContent>
           </Card>
