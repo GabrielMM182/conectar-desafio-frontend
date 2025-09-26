@@ -29,6 +29,8 @@ import { Badge } from '@/components/ui/badge';
 import Spinner from '@/components/ui/spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CreateCustomerDialog from '@/components/CreateCustomerDialog';
+import DeleteCustomerDialog from '@/components/DeleteCustomerDialog';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function CustomersTable() {
   const {
@@ -41,6 +43,8 @@ export default function CustomersTable() {
     resetFilters,
     refetch,
   } = useCustomers();
+
+  const { canCreateCustomers, canDeleteCustomers } = usePermissions();
 
   const [searchForm, setSearchForm] = useState<{
     razaoSocial: string;
@@ -151,7 +155,9 @@ export default function CustomersTable() {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Customers</CardTitle>
-          <CreateCustomerDialog onCustomerCreated={refetch} />
+          {canCreateCustomers && (
+            <CreateCustomerDialog onCustomerCreated={refetch} />
+          )}
         </div>
       </CardHeader>
       <CardContent>
@@ -286,12 +292,15 @@ export default function CustomersTable() {
                     <TableHead>Status</TableHead>
                     <TableHead>Conecta Plus</TableHead>
                     <TableHead>Criado em</TableHead>
+                    {(canDeleteCustomers) && (
+                      <TableHead>Ações</TableHead>
+                    )}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-12">
+                      <TableCell colSpan={(canDeleteCustomers) ? 9 : 8} className="text-center py-12">
                         <div className="flex flex-col items-center gap-2">
                           <p className="text-muted-foreground">
                             {hasActiveFilters() 
@@ -342,6 +351,18 @@ export default function CustomersTable() {
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(customer.createdAt)}</TableCell>
+                        {(canDeleteCustomers) && (
+                          <TableCell>
+                            <div className="flex gap-2">
+                              {canDeleteCustomers && (
+                                <DeleteCustomerDialog
+                                  customer={customer}
+                                  onCustomerDeleted={refetch}
+                                />
+                              )}
+                            </div>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))
                   )}
